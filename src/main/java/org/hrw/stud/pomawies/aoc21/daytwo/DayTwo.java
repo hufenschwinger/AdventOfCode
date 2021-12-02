@@ -5,9 +5,24 @@ import org.hrw.stud.pomawies.aoc21.Util;
 
 public class DayTwo {
 
-	public record Input(String mode, long amount) {
+	public enum MODE {
+		FORWARD,
+		UP,
+		DOWN;
+
+		public static MODE map(String mode) {
+			return switch (mode) {
+				case "forward" -> FORWARD;
+				case "down" -> DOWN;
+				case "up" -> UP;
+				default -> throw new IllegalArgumentException("Unknown mode: " + mode);
+			};
+		}
+	}
+
+	public record Input(MODE mode, long amount) {
 		public Input(String[] line) {
-			this(line[0], Long.parseLong(line[1]));
+			this(MODE.map(line[0]), Long.parseLong(line[1]));
 		}
 	}
 
@@ -19,9 +34,9 @@ public class DayTwo {
 
 		public void parseInput(Input input) {
 			switch (input.mode()) {
-				case "forward" -> distance += input.amount();
-				case "down" -> depth += input.amount();
-				case "up" -> depth -= input.amount();
+				case FORWARD -> distance += input.amount();
+				case DOWN -> depth += input.amount();
+				case UP -> depth -= input.amount();
 				default -> throw new IllegalArgumentException("Unknown mode: " + input.mode());
 			}
 		}
@@ -39,12 +54,12 @@ public class DayTwo {
 		@Override
 		public void parseInput(Input input) {
 			switch (input.mode()) {
-				case "forward" -> {
+				case FORWARD -> {
 					distance += input.amount();
 					depth += aim * input.amount();
 				}
-				case "down" -> aim += input.amount();
-				case "up" -> aim -= input.amount();
+				case DOWN -> aim += input.amount();
+				case UP -> aim -= input.amount();
 				default -> throw new IllegalArgumentException("Unknown mode: " + input.mode());
 			}
 		}
@@ -60,10 +75,10 @@ public class DayTwo {
 
 		final SubCoordinatesTypeA subCoordinatesTypeA = new SubCoordinatesTypeA();
 		inputs.forEach(subCoordinatesTypeA::parseInput);
-		System.out.printf("Product of depth and distance after parsing by Mode A: %d%n", subCoordinatesTypeA.depthTimesDistance());
+		System.out.printf("Product of depth and distance after parsing by MODE A: %d%n", subCoordinatesTypeA.depthTimesDistance());
 
 		final SubCoordinatesTypeB subCoordinatesTypeB = new SubCoordinatesTypeB();
 		inputs.forEach(subCoordinatesTypeB::parseInput);
-		System.out.printf("Product of depth and distance after parsing by Mode B: %d%n", subCoordinatesTypeB.depthTimesDistance());
+		System.out.printf("Product of depth and distance after parsing by MODE B: %d%n", subCoordinatesTypeB.depthTimesDistance());
 	}
 }
