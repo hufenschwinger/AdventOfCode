@@ -6,24 +6,39 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import org.jetbrains.annotations.NotNull;
 
 public final class Util {
+	public static final char ZERO = '0';
+	public static final char ONE = '1';
+
 	private Util() { }
 
-	public static List<String> readFile(String pathFromContentRoot) throws IOException {
+	public static long binaryToLong(@NotNull String msbBinaryString) {
+		final int inputLen = msbBinaryString.length();
+
+		return IntStream.range(0, inputLen)
+			.filter(index -> msbBinaryString.charAt(index) == ONE)
+			.map(index -> inputLen - (index + 1))
+			.mapToLong(oneIndex -> 1L << oneIndex)
+			.sum();
+	}
+
+	public static @NotNull List<@NotNull String> readFile(@NotNull String pathFromContentRoot) throws IOException {
 		Path path = Path.of(pathFromContentRoot).toAbsolutePath();
 		return Files.readAllLines(path, StandardCharsets.UTF_8);
 	}
 
-	public static <T> Stream<T> streamFile(String pathFromContentRoot, Function<String, T> mapper) throws IOException {
+	public static <T> @NotNull Stream<@NotNull T> streamFile(@NotNull String pathFromContentRoot, @NotNull Function<@NotNull String, @NotNull T> mapper) throws IOException {
 		return readFile(pathFromContentRoot)
 			.stream()
 			.parallel()
 			.map(mapper);
 	}
 
-	public static Stream<String> streamFile(String pathFromContentRoot) throws IOException {
+	public static @NotNull Stream<@NotNull String> streamFile(@NotNull String pathFromContentRoot) throws IOException {
 		return readFile(pathFromContentRoot)
 			.stream()
 			.parallel();
