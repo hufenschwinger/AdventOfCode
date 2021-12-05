@@ -3,6 +3,7 @@ package org.hrw.stud.pomawies.aoc21;
 import static java.util.function.Predicate.not;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -150,6 +151,11 @@ public final class DayFour {
 			))
 			.toList();
 
+		System.out.println(partOne(drawnNumbers, boards));
+		System.out.println(partTwo(drawnNumbers, boards));
+	}
+
+	private static String partOne(List<Integer> drawnNumbers, List<BingoBoard> boards) {
 		for (int draw : drawnNumbers) {
 			Optional<BingoBoard> winningBoard = boards
 				.stream()
@@ -157,14 +163,33 @@ public final class DayFour {
 				.findFirst();
 
 			if (winningBoard.isPresent()) {
-				System.out.printf("Winning board %d with winValue %d%n",
+				return String.format("Winning board %d with winValue %d%n",
 					winningBoard.get()
 						.getBoardNumber(),
 					draw * winningBoard.get()
 						.sumOfUnmarkedFields()
 				);
-				break;
 			}
 		}
+		return null;
+	}
+
+	private static String partTwo(List<Integer> drawnNumbers, List<BingoBoard> boards) {
+		List<BingoBoard> reductionList = new LinkedList<>(boards);
+
+		for(int draw : drawnNumbers) {
+			List<BingoBoard> winningBoards = reductionList.stream()
+												 .filter(board -> board.addDrawnNumber(draw))
+												 .toList();
+			if(reductionList.size() == 1 && winningBoards.size() == 1) {
+				BingoBoard loserBoard = reductionList.get(0);
+
+				return String.format("Last board to win is board %d with winValue of %d",
+					loserBoard.getBoardNumber(),
+					draw * loserBoard.sumOfUnmarkedFields());
+			}
+			reductionList.removeAll(winningBoards);
+		}
+		return null;
 	}
 }
