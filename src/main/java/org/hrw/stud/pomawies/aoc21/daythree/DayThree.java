@@ -38,7 +38,6 @@ public class DayThree {
 				gamma.append(Util.ONE);
 				epsilon.append(Util.ZERO);
 			}
-
 		}
 
 		public long powerConsumption() {

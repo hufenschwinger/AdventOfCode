@@ -18,7 +18,7 @@ public final class Util {
 
 	/**
 	 * Gets the long value of a String consisting of ONEs and ZEROs
-	 * @param msbBinaryString input ins MostSignificantBit-first notation
+	 * @param msbBinaryString input in MostSignificantBit-first notation
 	 * @return long corresponding to input-String
 	 */
 	public static long binaryToLong(@NotNull String msbBinaryString) {
