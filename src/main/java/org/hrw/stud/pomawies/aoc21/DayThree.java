@@ -1,4 +1,4 @@
-package org.hrw.stud.pomawies.aoc21.daythree;
+package org.hrw.stud.pomawies.aoc21;
 
 import static java.util.function.Predicate.not;
 import java.io.IOException;
@@ -10,7 +10,6 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import org.hrw.stud.pomawies.aoc21.Util;
 import org.jetbrains.annotations.NotNull;
 
 public class DayThree {

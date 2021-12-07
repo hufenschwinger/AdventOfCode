@@ -1,11 +1,10 @@
-package org.hrw.stud.pomawies.aoc21.dayone;
+package org.hrw.stud.pomawies.aoc21;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import org.hrw.stud.pomawies.aoc21.Util;
 import org.jetbrains.annotations.NotNull;
 
 public class DayOne {

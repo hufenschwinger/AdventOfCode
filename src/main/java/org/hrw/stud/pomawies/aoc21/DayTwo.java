@@ -1,7 +1,6 @@
-package org.hrw.stud.pomawies.aoc21.daytwo;
+package org.hrw.stud.pomawies.aoc21;
 
 import java.io.IOException;
-import org.hrw.stud.pomawies.aoc21.Util;
 
 public class DayTwo {
 
