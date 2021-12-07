@@ -4,47 +4,39 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Stream;
 
 public class DaySix {
+	private static final int MAX_COUNTER = 6;
+	private static final int NEWBORN_COUNTER = 8;
 
-	public static class LanternFish {
-		private static final long MAX_COUNTER = 6;
-		private static final long NEWBORN_ADDITIONAL_COUNTER = 2;
-		private long counter;
-
-		public LanternFish(long counter) {
-			this.counter = counter;
-		}
-
-		public Stream<LanternFish> age() {
-			if (counter != 0) {
-				counter--;
-				return Stream.of(this);
-			} else {
-				counter = MAX_COUNTER;
-				return Stream.of(this, new LanternFish(MAX_COUNTER + NEWBORN_ADDITIONAL_COUNTER));
-			}
-		}
-	}
 
 	public static void main(String[] args) throws IOException {
-		List<Long> startVals = Util.streamFile("src/main/resources/daySixInput")
+		List<Integer> startVals = Util.streamFile("src/main/resources/daySixInput")
 			.map(line -> line.split(","))
 			.flatMap(Arrays::stream)
-			.map(Long::valueOf)
+			.map(Integer::valueOf)
 			.toList();
-		final int days = 80;
+		final int partOneDays = 80;
+		final int partTwoDays = 256;
 
-		System.out.printf("%d fish after %d days%n", fishAfterDays(startVals, days), days);
+		System.out.printf("%d fish after %d days%n", fishAfterDays(startVals, partOneDays), partOneDays);
+		System.out.printf("%d fish after %d days%n", fishAfterDays(startVals, partTwoDays), partTwoDays);
 	}
 
-	private static long fishAfterDays(Collection<Long> startVals, int iterationDays) {
-		Stream<LanternFish> fishStream = startVals.stream()
-			.map(LanternFish::new);
-		for (int i = 0; i < iterationDays; i++) {
-			fishStream = fishStream.flatMap(LanternFish::age);
+	private static long fishAfterDays(Collection<Integer> startVals, int iterationDays) {
+		long[] nums = new long[NEWBORN_COUNTER + 1];
+		for (Integer startVal : startVals) {
+			nums[startVal]++;
 		}
-		return fishStream.count();
+		for(int i = 0; i < iterationDays; i++) {
+			long fertile = nums[0];
+
+			System.arraycopy(nums, 1, nums, 0, nums.length - 1);
+			nums[MAX_COUNTER] += fertile;
+			nums[NEWBORN_COUNTER] = fertile;
+		}
+
+		return Arrays.stream(nums)
+				   .sum();
 	}
 }
