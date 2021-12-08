@@ -36,8 +36,8 @@ public class DayEight {
 	}
 
 	private static int lineToValue(String[] line) {
-		final BiMap<Set<Character>, String> setToDigit = HashBiMap.create();
-		final BiMap<String, Set<Character>> digitToSet = setToDigit.inverse();
+		final BiMap<Set<Character>, Integer> setToDigit = HashBiMap.create();
+		final BiMap<Integer, Set<Character>> digitToSet = setToDigit.inverse();
 
 		final var leftSide = Arrays.stream(line[0].split(" "))
 			.map(inp -> inp.chars()
@@ -54,22 +54,22 @@ public class DayEight {
 		leftSide.stream()
 			.filter(set -> set.size() == 2)
 			.findAny()
-			.ifPresent(oneSet -> setToDigit.put(oneSet, "1"));
+			.ifPresent(oneSet -> setToDigit.put(oneSet, 1));
 
 		leftSide.stream()
 			.filter(set -> set.size() == 3)
 			.findAny()
-			.ifPresent(sevenSet -> setToDigit.put(sevenSet, "7"));
+			.ifPresent(sevenSet -> setToDigit.put(sevenSet, 7));
 
 		leftSide.stream()
 			.filter(set -> set.size() == 4)
 			.findAny()
-			.ifPresent(sevenSet -> setToDigit.put(sevenSet, "4"));
+			.ifPresent(fourSet -> setToDigit.put(fourSet, 4));
 
 		leftSide.stream()
 			.filter(set -> set.size() == 7)
 			.findAny()
-			.ifPresent(eightSet -> setToDigit.put(eightSet, "8"));
+			.ifPresent(eightSet -> setToDigit.put(eightSet, 8));
 
 		final var ambiguousSetsBySize = leftSide.stream()
 			.filter(set -> !Set.of(2, 3, 4, 7)
@@ -78,29 +78,29 @@ public class DayEight {
 		//1 4 7 8 done
 		ambiguousSetsBySize.get(6) //0 6 9
 			.forEach(set -> {
-				if (setOverlap(set, digitToSet.get("1")) == 1) {
-					setToDigit.put(set, "6");
-				} else if (setOverlap(set, digitToSet.get("4")) == 4) {
-					setToDigit.put(set, "9");
+				if (setOverlap(set, digitToSet.get(1)) == 1) {
+					setToDigit.put(set, 6);
+				} else if (setOverlap(set, digitToSet.get(4)) == 4) {
+					setToDigit.put(set, 9);
 				} else {
-					setToDigit.put(set, "0");
+					setToDigit.put(set, 0);
 				}
 			});
 
 		//0 1 4 6 7 8 9 done
 		ambiguousSetsBySize.get(5) //2 3 5
 			.forEach(set -> {
-				if(setOverlap(set, digitToSet.get("1")) == 2) {
-					setToDigit.put(set, "3");
-				} else if (setOverlap(set, digitToSet.get("4")) == 2) {
-					setToDigit.put(set, "2");
+				if(setOverlap(set, digitToSet.get(1)) == 2) {
+					setToDigit.put(set, 3);
+				} else if (setOverlap(set, digitToSet.get(4)) == 2) {
+					setToDigit.put(set, 2);
 				} else {
-					setToDigit.put(set, "5");
+					setToDigit.put(set, 5);
 				}
 			}
 		);
 
-		//all set
+		//all done
 		StringBuilder sb = new StringBuilder();
 		rightSide.forEach(rightSet -> sb.append(setToDigit.get(rightSet)));
 		return Integer.parseInt(sb.toString());
