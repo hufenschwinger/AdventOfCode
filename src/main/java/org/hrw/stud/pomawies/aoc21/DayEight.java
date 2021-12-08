@@ -1,9 +1,7 @@
 package org.hrw.stud.pomawies.aoc21;
 
-import static java.util.function.Predicate.not;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import com.google.common.collect.BiMap;
@@ -86,7 +84,6 @@ public class DayEight {
 					setToDigit.put(set, 0);
 				}
 			});
-
 		//0 1 4 6 7 8 9 done
 		ambiguousSetsBySize.get(5) //2 3 5
 			.forEach(set -> {
@@ -99,26 +96,15 @@ public class DayEight {
 				}
 			}
 		);
-
 		//all done
 		StringBuilder sb = new StringBuilder();
 		rightSide.forEach(rightSet -> sb.append(setToDigit.get(rightSet)));
 		return Integer.parseInt(sb.toString());
 	}
 
-	private static <T> int setOverlap(Set<T> a, Set<T> b) {
-		Set<T> start = new HashSet<>(a);
-		start.removeIf(not(b::contains));
-		return start.size();
+	private static <T> long setOverlap(Set<T> a, Set<T> b) {
+		return a.stream()
+				   .filter(b::contains)
+				   .count();
 	}
-
-/*
- aaaa
-b    c
-b    c
- dddd
-e    f
-e    f
- gggg
-*/
 }
