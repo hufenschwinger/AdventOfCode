@@ -13,7 +13,7 @@ public class DayNine {
 
 	public record Point(int x, int y) {
 		public Point adjustDownRight() {
-			return new Point(x+1,y+1);
+			return new Point(x + 1, y + 1);
 		}
 
 		public Stream<Point> neighbours() {
@@ -46,11 +46,11 @@ public class DayNine {
 			basinPoints.add(lowPoint);
 			while (true) {
 				Set<Point> addedPoints = basinPoints.stream()
-											 .flatMap(Point::neighbours)
-											 .filter(not(basinPoints::contains))
-											 .filter(point -> readAt(point) != 9)
-											 .collect(Collectors.toSet());
-				if(addedPoints.isEmpty()) {
+					.flatMap(Point::neighbours)
+					.filter(not(basinPoints::contains))
+					.filter(point -> readAt(point) != 9)
+					.collect(Collectors.toSet());
+				if (addedPoints.isEmpty()) {
 					break;
 				}
 				basinPoints.addAll(addedPoints);
@@ -75,8 +75,8 @@ public class DayNine {
 
 		Set<Point> lowPoints = new HashSet<>();
 
-		for(int row = 0; row < rowCount; row++) {
-			for(int col = 0; col < colCount; col++) {
+		for (int row = 0; row < rowCount; row++) {
+			for (int col = 0; col < colCount; col++) {
 				int val = arr[row][col];
 				if ((row == 0			 || val < arr[row - 1][col])   //up
 				 && (row == rowCount - 1 || val < arr[row + 1][col])   //down
@@ -90,9 +90,9 @@ public class DayNine {
 		System.out.println(dangerLevelSum);
 
 		final List<String> paddedLines = new ArrayList<>(rowCount + 2);
-		paddedLines.add("9".repeat(colCount+2));
-		input.forEach(line -> paddedLines.add("9"+line+"9"));
-		paddedLines.add("9".repeat(colCount+2));
+		paddedLines.add("9".repeat(colCount + 2));
+		input.forEach(line -> paddedLines.add("9" + line + "9"));
+		paddedLines.add("9".repeat(colCount + 2));
 
 		final int[][] paddedArr = linesTo2DArray(paddedLines);
 
