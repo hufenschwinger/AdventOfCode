@@ -88,7 +88,8 @@ public class DayTen {
 			}
 		}
 		long result = 0L;
-		for (final Character openingChar : openingCharStack) {
+		for (int i = 0; i < openingCharStack.size(); i++) {
+			final Character openingChar = openingCharStack.get(i);
 			result *= 5;
 			result += COMPLETING_TO_POINTS.get(OPENING_TO_CLOSING.get(openingChar));
 		}
