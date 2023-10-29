@@ -10,7 +10,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import org.jetbrains.annotations.NotNull;
+import org.eclipse.jdt.annotation.NonNull;
 
 public class DayThree {
 
@@ -18,7 +18,7 @@ public class DayThree {
 		private final StringBuilder epsilon = new StringBuilder();
 		private final StringBuilder gamma = new StringBuilder();
 
-		public void add(@NotNull Collection<@NotNull Character> column) {
+		public void add(@NonNull Collection<@NonNull Character> column) {
 			final var charCounts = column.stream()
 				.collect(Collectors.groupingBy(
 					Function.identity(),
@@ -50,7 +50,7 @@ public class DayThree {
 	 * @param oneZeroDecider compares number of ONEs found to number of ZEROs found in a column and determines the relevant char
 	 * @return long-value of last remaining line ({@link Util#binaryToLong(String)})
 	 */
-	private static long reduceListToLong(@NotNull List<@NotNull String> fullInput, @NotNull BiFunction<Long, Long, Character> oneZeroDecider) {
+	private static long reduceListToLong(@NonNull List<@NonNull String> fullInput, @NonNull BiFunction<Long, Long, Character> oneZeroDecider) {
 		final List<String> reductionList = new LinkedList<>(fullInput);
 		int index = 0;
 

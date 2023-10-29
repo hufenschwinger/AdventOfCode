@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import org.jetbrains.annotations.NotNull;
+import org.eclipse.jdt.annotation.NonNull;
 
 public class DayOne {
 	public static void main(String[] args) throws IOException {
@@ -20,7 +20,7 @@ public class DayOne {
 		);
 	}
 
-	private static List<Integer> rollingAverage(@NotNull List <@NotNull Integer> integers, int size) {
+	private static List<Integer> rollingAverage(@NonNull List <@NonNull Integer> integers, int size) {
 		return IntStream.rangeClosed(0, integers.size() - size)
 			.parallel()
 			.map(i -> IntStream.range(i, i + size)
@@ -31,7 +31,7 @@ public class DayOne {
 			.toList();
 	}
 
-	private static int increasesInList(@NotNull List<@NotNull Integer> list) {
+	private static int increasesInList(@NonNull List<@NonNull Integer> list) {
 		return IntStream.range(1, list.size())
 			.parallel()
 			.map(index -> list.get(index) > list.get(index - 1) ? 1 : 0)

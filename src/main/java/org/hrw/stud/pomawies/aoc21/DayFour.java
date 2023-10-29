@@ -11,7 +11,7 @@ import java.util.function.Function;
 import java.util.function.IntPredicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import org.jetbrains.annotations.NotNull;
+import org.eclipse.jdt.annotation.NonNull;
 
 public final class DayFour {
 
@@ -38,7 +38,7 @@ public final class DayFour {
 		int[][] nums = new int[BOARD_DIMENSION][BOARD_DIMENSION];
 		Boolean[][] checked = new Boolean[BOARD_DIMENSION][BOARD_DIMENSION];
 
-		public BingoBoard(int boardNumber, @NotNull List<@NotNull String> rows) {
+		public BingoBoard(int boardNumber, @NonNull List<@NonNull String> rows) {
 			this.boardNumber = boardNumber;
 			if (rows.size() != BOARD_DIMENSION) {
 				throw new IllegalArgumentException("Number of rows is not same as Board dimension");
