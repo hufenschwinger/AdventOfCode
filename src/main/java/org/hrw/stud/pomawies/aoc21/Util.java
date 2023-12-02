@@ -1,6 +1,7 @@
 package org.hrw.stud.pomawies.aoc21;
 
 import java.io.IOException;
+import java.lang.annotation.Retention;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -13,6 +14,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.NonNullByDefault;
+import io.reactivex.rxjava3.core.Flowable;
 
 @NonNullByDefault
 public final class Util {
@@ -73,5 +75,9 @@ public final class Util {
 						  .collect(Collectors.toSet());
 		}
 		return classes;
+	}
+
+	public static Flowable<String> getLines(String pathToFile) throws IOException {
+		return Flowable.fromIterable(readFile(pathToFile));
 	}
 }
