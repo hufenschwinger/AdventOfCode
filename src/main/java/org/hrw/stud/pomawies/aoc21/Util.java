@@ -78,6 +78,6 @@ public final class Util {
 	}
 
 	public static Flowable<String> getLines(String pathToFile) throws IOException {
-		return Flowable.fromIterable(readFile(pathToFile));
+		return Flowable.fromIterable(readFile(pathToFile)).cache();
 	}
 }
