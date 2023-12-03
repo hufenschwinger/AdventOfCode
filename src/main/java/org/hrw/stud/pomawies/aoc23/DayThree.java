@@ -6,9 +6,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
@@ -34,7 +32,7 @@ public class DayThree {
 		public Stream<Coordinates> toNeighbours() {
 			return IntStream.rangeClosed(x - 1, x + 1)
 					   .boxed()
-					   .flatMap(x -> IntStream.range(y - 1, y + 1)
+					   .flatMap(x -> IntStream.rangeClosed(y - 1, y + 1)
 										 .mapToObj(y -> new Coordinates(x, y))
 					   );
 		}
@@ -82,47 +80,30 @@ public class DayThree {
 		}
 	}
 
-	private static Collection<Coordinates> coordinatesForNumber(int y, DetectedNumber number) {
+	private static Stream<Coordinates> coordinatesForNumber(int y, DetectedNumber number) {
 		return number.indices()
 				   .stream()
 				   .map(x -> new Coordinates(x, y))
 				   .flatMap(Coordinates::toNeighbours)
-				   .collect(Collectors.toCollection(TreeSet::new));
+				   .distinct();
 	}
 
 	public static void main(String[] args) throws IOException {
 		List<InputLine> parsed = Util.streamFile("src/main/resources/23/3.txt")
 									 .map(InputLine::from)
 									 .collect(Collectors.toCollection(ArrayList::new));
-		long counter = 0L;
-
-		Map<Integer, Collection<Coordinates>> numbersByLine = new TreeMap<>();
 		final int size = parsed.size();
-		for (int y = 0; y < size; y++) {
-			final int finalY = y;
-			numbersByLine.put(y, parsed.get(y)
-									 .signIndices()
-									 .stream()
-									 .map(x -> new Coordinates(x, finalY))
-									 .toList());
-		}
 
-		for (int y = 0; y < size; y++) {
-			var pointsForRow = IntStream.range(Math.max(y - 1, 0), Math.min(size, y + 1))
-								   .mapToObj(numbersByLine::get)
-								   .flatMap(Collection::stream)
-								   .collect(Collectors.toCollection(TreeSet::new));
+		Collection<Coordinates> allSigns = IntStream.range(0, size).boxed()
+											   .flatMap(y -> parsed.get(y).signIndices().stream()
+																	.map(x -> new Coordinates(x, y)))
+											   .collect(Collectors.toCollection(TreeSet::new));
 
-			for (final DetectedNumber number : parsed.get(y)
-												   .numbers()) {
-				boolean neighborDetected = coordinatesForNumber(y, number).stream()
-											   .anyMatch(pointsForRow::contains);
-				if (neighborDetected) {
-					counter += number.value;
-				}
-			}
-		}
-
-		System.out.println("p1: " + counter);//TODO 329162 too low
+		final long counter = IntStream.range(0, size).boxed()
+			.flatMap(y -> parsed.get(y).numbers.stream()
+							  .filter(num -> coordinatesForNumber(y, num).anyMatch(allSigns::contains)))
+			.mapToInt(DetectedNumber::value)
+			.sum();
+		System.out.println("p1: " + counter);
 	}
 }
