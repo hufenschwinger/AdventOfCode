@@ -3,6 +3,7 @@ package org.hrw.stud.pomawies.aoc23;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.EnumMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -26,17 +27,44 @@ public class DayTwo {
 		}
 	}
 
-	private record ResultSet(long amount, Color color) {
-		public static ResultSet fromGroup(String group) {
+	private record SingleResult(long amount, Color color) {
+		public static SingleResult fromGroup(String group) {
 			return Color.colors
 					   .filter(c -> c.isContained(group))
 					   .singleElement()
 					   .toSingle()
-					   .map(c -> new ResultSet(
+					   .map(c -> new SingleResult(
 						   Long.parseLong(group.trim().split(" ")[0]),
 						   c
 					   ))
 					   .blockingGet();
+		}
+	}
+
+	private record ResultSet(Collection<SingleResult> results) {
+		public static ResultSet from(String groups) {
+			Collection<SingleResult> singleResults = new LinkedList<>();
+			for (String s : groups.split(",")) {
+				singleResults.add(SingleResult.fromGroup(s));
+			}
+			return new ResultSet(singleResults);
+		}
+
+		public Map<Color, Long> maxesPerColor() {
+			return results.stream().collect(Collectors.groupingBy(
+				SingleResult::color,
+				Collectors.collectingAndThen(
+					Collectors.mapping(
+						SingleResult::amount,
+						Collectors.maxBy(Comparator.naturalOrder())),
+					o -> o.orElse(0L))));
+		}
+
+		public long power() {
+			return results.stream()
+					   .mapToLong(SingleResult::amount)
+					   .reduce((a, b) -> a * b)
+					   .orElseThrow();
 		}
 	}
 
@@ -46,27 +74,39 @@ public class DayTwo {
 			int id = Integer.parseInt(meta[0].split(" ")[1]);
 			Collection<ResultSet> resultSets = new LinkedList<>();
 			for (String g : meta[1].split(";")) {
-				for (String s : g.split(",")) {
-					resultSets.add(ResultSet.fromGroup(s));
-				}
+				resultSets.add(ResultSet.from(g));
 			}
 			return new Game(id, resultSets);
 		}
 
+		public ResultSet minimumSet() {
+			Map<Color, Long> maxPerColor = new EnumMap<>(Color.class);
+			for (ResultSet resultSet : items) {
+				final var currentMaxes = resultSet.maxesPerColor();
+				for (Color color : Color.values()) {
+					long old = maxPerColor.getOrDefault(color, 0L);
+					long current = currentMaxes.getOrDefault(color, 0L);
+					if (current > old) {
+						maxPerColor.put(color, current);
+					}
+				}
+			}
+
+			return new ResultSet(
+				maxPerColor.entrySet().stream()
+					.map(entry -> new SingleResult(entry.getValue(), entry.getKey()))
+					.toList()
+			);
+		}
+
 		public boolean allPossible(Map<Color, Long> requiredNumbers) {
-			Map<Color, Long> maxAmountByColor = items.stream()
-													.collect(Collectors
-																 .groupingBy(
-																	 ResultSet::color,
+			Map<Color, Long> maxAmountByColor = items.stream().flatMap(rs -> rs.results.stream()).collect(Collectors.groupingBy(
+																	 SingleResult::color,
 																	 Collectors.collectingAndThen(
 																		 Collectors.mapping(
-																			 ResultSet::amount,
-																			 Collectors.maxBy(Comparator.naturalOrder())
-																		 ),
-																		 o -> o.orElse(0L)
-																	 )
-																 ));
-
+																			 SingleResult::amount,
+																			 Collectors.maxBy(Comparator.naturalOrder())),
+																		 o -> o.orElse(0L))));
 
 			return requiredNumbers.entrySet()
 					   .stream()
@@ -84,6 +124,13 @@ public class DayTwo {
 			.filter(g -> g.allPossible(partOne))
 			.map(Game::id)
 			.reduce(0, Integer::sum)
+			.doOnSuccess(System.out::println)
+			.blockingGet();
+
+		Util.getLines("src/main/resources/23/2.txt")
+			.subscribeOn(Schedulers.computation())
+			.map(line -> Game.fromLine(line).minimumSet().power())
+			.reduce(0L, Long::sum)
 			.doOnSuccess(System.out::println)
 			.blockingGet();
 	}
